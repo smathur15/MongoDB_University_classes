@@ -1,0 +1,12 @@
+Problem:
+
+Based on our shipwrecks dataset, how many shipwrecks lay off the coast of Cancun / Isla Mujeres, Mexico? Choose the answer that best describes the number of shipwrecks you are able to find using Compass.
+Choose the best answer:
+
+0-10
+25-50
+51-100
+101-200
+201 or more
+
+Answer: 0-10
