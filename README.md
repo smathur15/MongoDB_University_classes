@@ -1,1 +1,1 @@
-# MongoDB_University_classes
+Attended the MongoDB university classes and completed the assignmemnts.
