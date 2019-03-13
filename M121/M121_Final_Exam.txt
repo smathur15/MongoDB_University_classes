@@ -206,7 +206,7 @@ var pipeline = [{
     }
   }]
   
-  Answer: b
+  Answer: a
 ********************************************************************************
   
 Problem:
@@ -497,29 +497,38 @@ Choose the best answer:
 3. OneWorld, with 4 carriers
 4. Star Alliance, with 6 carriers
 
-Answer: 2
+Answer: 3
 
-var pipeline = [
-    { $match : {
-        $or : [
-		    { $and : [ { "src_airport" : "JFK" }, { "dst_airport" : "LHR" } ] },
-			{ $and : [ { "src_airport" : "LHR" }, { "dst_airport" : "JFK" } ] }
-            ]
-        }
-    },
-    { $lookup : {
-        from : "air_alliances",
-        localField : "airline.name",
-        foreignField : "airlines",
-        as : "alliance"
-        }
-    },
-	{ $group : {
-        "_id" : '$airline.id',
-        "alliance" : { $first: "$alliance" }
-        }
-    },
-	{ $match : { "alliance" : { $not : { $size : 0 } } } },
-	{ $sortByCount : "$alliance" },
-	{ $limit : 1 }
-];
+db.air_routes.aggregate([
+  {
+    $match: {
+      src_airport: { $in: ["LHR", "JFK"] },
+      dst_airport: { $in: ["LHR", "JFK"] }
+    }
+  },
+  {
+    $lookup: {
+      from: "air_alliances",
+      foreignField: "airlines",
+      localField: "airline.name",
+      as: "alliance"
+    }
+  },
+  {
+    $match: { alliance: { $ne: [] } }
+  },
+  {
+    $addFields: {
+      alliance: { $arrayElemAt: ["$alliance.name", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$airline.id",
+      alliance: { $first: "$alliance" }
+    }
+  },
+  {
+    $sortByCount: "$alliance"
+  }
+]);
